@@ -1,0 +1,235 @@
+{
+  "schema_version": "case2skill.lesson.v0",
+  "name": "recover-idempotent-submit-after-timeout",
+  "description": "Recover from an ambiguous submit timeout without accidentally duplicating a created resource. This candidate lesson applies to a service that accepts caller-supplied operation identifiers, provides lookup, and promises retained idempotent replay for the same identifier and identical payload. The case is a local virtual-time simulation, so the procedure should be adapted only after checking the target service’s actual contract and retention rules.",
+  "goal": "Determine whether a timed-out creation request succeeded, recover its result when possible, and avoid turning one intended operation into duplicate reports.",
+  "source_case_id": "report-timeout-001",
+  "conditions": {
+    "requires": [
+      {
+        "text": "The operation must use a caller-supplied identifier that can be preserved after a timeout and reused for lookup or replay.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 2,
+            "end_line": 2
+          },
+          {
+            "file": "service-contract.md",
+            "start_line": 9,
+            "end_line": 9
+          }
+        ]
+      },
+      {
+        "text": "The service must explicitly support idempotency for the relevant operation and retain the identifier long enough for recovery.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 3,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "text": "A retry intended to represent the same logical operation must retain both the original operation identifier and the identical payload; changing the payload produces a conflict under this contract.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 5,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "text": "Lookup must be available if the workflow relies on checking the original operation before replaying it.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 8,
+            "end_line": 8
+          }
+        ]
+      }
+    ],
+    "excludes": [
+      {
+        "text": "Do not treat this procedure as established for other service versions or for retries made after the idempotency retention period.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "case.md",
+            "start_line": 7,
+            "end_line": 7
+          }
+        ]
+      },
+      {
+        "text": "Do not use a fresh operation identifier as an automatic response to an ambiguous timeout when the user intended only one report; in the observed fixture, that behavior created a second report.",
+        "basis": "observed",
+        "evidence": [
+          {
+            "file": "events.jsonl",
+            "start_line": 1,
+            "end_line": 5
+          }
+        ]
+      }
+    ],
+    "unknowns": [
+      {
+        "text": "The case does not establish what a caller should do after lookup returns not_found or indeterminate; those states do not, by themselves, prove whether creation occurred in every possible service implementation.",
+        "basis": "inferred",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 7,
+            "end_line": 10
+          }
+        ]
+      },
+      {
+        "text": "The case does not establish recovery behavior at or beyond expiry, where replay protection no longer applies and another submission may create a new report.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 4,
+            "end_line": 6
+          }
+        ]
+      },
+      {
+        "text": "The event timestamps are virtual ticks and cannot be used to infer real network latency, retry delays, or production timing thresholds.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "case.md",
+            "start_line": 6,
+            "end_line": 6
+          }
+        ]
+      }
+    ]
+  },
+  "steps": [
+    {
+      "text": "Before submitting, generate and persist one operation identifier for the user’s single intended creation. Store it together with the exact request payload so both remain available if the response is lost. The identifier represents caller intent; payload equality alone is insufficient because identical payloads may legitimately describe separate requested reports.",
+      "basis": "inferred",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 2,
+          "end_line": 2
+        },
+        {
+          "file": "service-contract.md",
+          "start_line": 9,
+          "end_line": 9
+        }
+      ]
+    },
+    {
+      "text": "Submit the payload with that operation identifier. If the client receives a timeout, classify the outcome as ambiguous rather than failed: a timeout alone does not reveal whether the server accepted the request. Do not immediately allocate a new identifier, because the original request may already have created the resource.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 7,
+          "end_line": 7
+        },
+        {
+          "file": "events.jsonl",
+          "start_line": 1,
+          "end_line": 3
+        }
+      ]
+    },
+    {
+      "text": "While the original identifier remains within the documented retention window, query lookup using that identifier. If lookup returns completed, accept the returned report identifier as the created result and stop retrying the creation. Completed report identifiers correspond to actual created reports under this fixture’s contract.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 3,
+          "end_line": 4
+        },
+        {
+          "file": "service-contract.md",
+          "start_line": 8,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "text": "If recovery requires replay and the contract still guarantees protection, resubmit using the original operation identifier and the byte-for-byte or semantically contract-identical payload. Never silently modify the payload: this fixture specifies that an identical payload returns the same report while a changed payload returns conflict.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 4,
+          "end_line": 5
+        }
+      ]
+    },
+    {
+      "text": "Verify the replay result against the recovered report identifier when both are available. In the successful fixture, lookup of case-original returned completed with report-001, and the later same-identifier submission produced an idempotent replay of report-001 rather than creating another report.",
+      "basis": "observed",
+      "evidence": [
+        {
+          "file": "case.md",
+          "start_line": 5,
+          "end_line": 5
+        },
+        {
+          "file": "events.jsonl",
+          "start_line": 9,
+          "end_line": 11
+        }
+      ]
+    },
+    {
+      "text": "If lookup is unavailable or returns indeterminate, preserve the ambiguity and escalate to a service-specific recovery decision instead of claiming success or noncreation. An indeterminate response confirms neither outcome, so any replay decision must account for the remaining retention time and the cost of duplication.",
+      "basis": "inferred",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 8,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "text": "If the key is expired or idempotency is unsupported, do not describe another submission as safely idempotent. The contract permits such a submission to create another report. Require an explicit business decision about whether possible duplication is preferable to possible omission, and record the unresolved original operation.",
+      "basis": "inferred",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 6,
+          "end_line": 7
+        }
+      ]
+    },
+    {
+      "text": "Validate the outcome using actual creation records or completed report identifiers, not merely client attempts. The comparison fixture demonstrates the operational test: retrying with a new key produced two report_created events, whereas lookup followed by same-key replay retained one created report.",
+      "basis": "observed",
+      "evidence": [
+        {
+          "file": "events.jsonl",
+          "start_line": 1,
+          "end_line": 5
+        },
+        {
+          "file": "events.jsonl",
+          "start_line": 6,
+          "end_line": 11
+        }
+      ]
+    }
+  ],
+  "status": "candidate"
+}

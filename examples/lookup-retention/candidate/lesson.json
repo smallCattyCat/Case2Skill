@@ -1,0 +1,325 @@
+{
+  "schema_version": "case2skill.lesson.v0",
+  "name": "recover-idempotent-submit-after-timeout",
+  "description": "Recover from an ambiguous report-submission timeout without duplicating the intended report. This candidate applies to the local fixture’s caller-supplied operation identifiers, historical lookup, and time-limited replay protection; it does not establish behavior for unrelated services or versions.",
+  "goal": "Determine whether a timed-out report creation succeeded, recover its report identifier when possible, and avoid converting one intended report into duplicate reports.",
+  "source_case_id": "report-timeout-001",
+  "conditions": {
+    "requires": [
+      {
+        "text": "The caller must supply and preserve an operation identifier that the service accepts for submit and lookup.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 2,
+            "end_line": 2
+          },
+          {
+            "file": "service-contract.md",
+            "start_line": 9,
+            "end_line": 9
+          }
+        ]
+      },
+      {
+        "text": "The service must provide lookup by operation identifier for the workflow to recover an accepted report without another write.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 8,
+            "end_line": 8
+          },
+          {
+            "file": "receipt-store-v2.md",
+            "start_line": 3,
+            "end_line": 4
+          }
+        ]
+      },
+      {
+        "text": "A protected replay must occur strictly before this fixture’s 40-tick expiry and must retain the original identifier and identical payload.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 3,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "text": "The caller must distinguish replay-cache retention from historical-record retention because this fixture permits lookup after replay protection expires.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "receipt-store-v2.md",
+            "start_line": 2,
+            "end_line": 4
+          }
+        ]
+      }
+    ],
+    "excludes": [
+      {
+        "text": "Do not generalize this procedure to other service versions or assume that their replay and lookup records have the same lifetimes.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "case.md",
+            "start_line": 7,
+            "end_line": 7
+          },
+          {
+            "file": "receipt-store-v2.md",
+            "start_line": 2,
+            "end_line": 3
+          }
+        ]
+      },
+      {
+        "text": "Do not automatically submit under a new operation identifier after an ambiguous timeout when the user intended one report; that action created a second report in Attempt A.",
+        "basis": "observed",
+        "evidence": [
+          {
+            "file": "case.md",
+            "start_line": 3,
+            "end_line": 4
+          },
+          {
+            "file": "events.jsonl",
+            "start_line": 1,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "text": "Do not treat expiry of replay protection as expiry of historical lookup in the receipt-store-v2 fixture.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "receipt-store-v2.md",
+            "start_line": 3,
+            "end_line": 4
+          }
+        ]
+      },
+      {
+        "text": "Do not represent a submission at or after replay expiry as deduplicated; an expired key does not prevent creation of another report.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 4,
+            "end_line": 6
+          }
+        ]
+      }
+    ],
+    "unknowns": [
+      {
+        "text": "The evidence does not define how long accepted-report records remain queryable after replay protection expires.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "receipt-store-v2.md",
+            "start_line": 2,
+            "end_line": 4
+          }
+        ]
+      },
+      {
+        "text": "A not_found or indeterminate lookup does not establish whether creation occurred across possible implementations; this contract explicitly states only that indeterminate confirms neither outcome.",
+        "basis": "inferred",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 8,
+            "end_line": 10
+          }
+        ]
+      },
+      {
+        "text": "The evidence does not establish a safe replay procedure once protection has expired; another submission may create a report.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "service-contract.md",
+            "start_line": 4,
+            "end_line": 6
+          },
+          {
+            "file": "receipt-store-v2.md",
+            "start_line": 4,
+            "end_line": 4
+          }
+        ]
+      },
+      {
+        "text": "Virtual ticks do not establish production latency, retry intervals, or wall-clock retention thresholds.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "case.md",
+            "start_line": 6,
+            "end_line": 6
+          },
+          {
+            "file": "service-contract.md",
+            "start_line": 1,
+            "end_line": 1
+          }
+        ]
+      },
+      {
+        "text": "The cases are synthetic local software evidence, not production incidents.",
+        "basis": "documented",
+        "evidence": [
+          {
+            "file": "case.md",
+            "start_line": 2,
+            "end_line": 2
+          },
+          {
+            "file": "receipt-store-v2.md",
+            "start_line": 7,
+            "end_line": 7
+          }
+        ]
+      }
+    ]
+  },
+  "steps": [
+    {
+      "text": "Before submission, assign and persist one operation identifier for the user’s single intended report, together with the exact payload. The caller must encode intent in the identifier because identical payloads can represent separate requested reports.",
+      "basis": "inferred",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 2,
+          "end_line": 2
+        },
+        {
+          "file": "service-contract.md",
+          "start_line": 9,
+          "end_line": 9
+        }
+      ]
+    },
+    {
+      "text": "Submit the payload with that identifier. If the response times out, classify the result as ambiguous and preserve the original identifier; a timeout does not disclose whether the server accepted the request.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 7,
+          "end_line": 7
+        }
+      ]
+    },
+    {
+      "text": "Use lookup with the original identifier before considering another write, including after replay protection has expired when historical lookup remains available. In receipt-store-v2, lookup after a 50-tick wait recovered the existing report without resubmission.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "receipt-store-v2.md",
+          "start_line": 3,
+          "end_line": 6
+        },
+        {
+          "file": "receipt-store-events.jsonl",
+          "start_line": 1,
+          "end_line": 5
+        }
+      ]
+    },
+    {
+      "text": "If lookup returns completed, accept its report identifier as the created result and stop creation retries; completed report identifiers identify actual created reports under this contract.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 8,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "text": "Replay only while the contract still guarantees protection, using the original operation identifier and identical payload. A changed payload conflicts, and replay protection applies strictly before—not at or after—the expiry tick.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 3,
+          "end_line": 5
+        }
+      ]
+    },
+    {
+      "text": "When both lookup and replay results are available, verify that they identify the same report. In Attempt B, lookup recovered report-001 and the same-identifier replay returned report-001 without another report_created event.",
+      "basis": "observed",
+      "evidence": [
+        {
+          "file": "case.md",
+          "start_line": 5,
+          "end_line": 5
+        },
+        {
+          "file": "events.jsonl",
+          "start_line": 6,
+          "end_line": 11
+        }
+      ]
+    },
+    {
+      "text": "If lookup returns indeterminate, retain the ambiguous state and make a service-specific recovery decision; do not claim creation or noncreation from that response.",
+      "basis": "documented",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 8,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "text": "If replay protection has expired, continue any available historical lookup but do not assume a further submission will be deduplicated. If lookup does not resolve the outcome, record the unresolved original operation and require an explicit decision between possible duplication and possible omission before another write.",
+      "basis": "inferred",
+      "evidence": [
+        {
+          "file": "service-contract.md",
+          "start_line": 6,
+          "end_line": 7
+        },
+        {
+          "file": "receipt-store-v2.md",
+          "start_line": 3,
+          "end_line": 4
+        }
+      ]
+    },
+    {
+      "text": "Validate the final outcome using completed report identifiers and actual creation records rather than submit attempts alone. Attempt A recorded two report_created events after a new-key retry; Attempt B recorded one creation followed by same-key replay; receipt-store-v2 reported one actual report after post-expiry lookup without resubmission.",
+      "basis": "observed",
+      "evidence": [
+        {
+          "file": "events.jsonl",
+          "start_line": 1,
+          "end_line": 11
+        },
+        {
+          "file": "receipt-store-v2.md",
+          "start_line": 5,
+          "end_line": 6
+        },
+        {
+          "file": "receipt-store-events.jsonl",
+          "start_line": 1,
+          "end_line": 5
+        }
+      ]
+    }
+  ],
+  "status": "candidate"
+}

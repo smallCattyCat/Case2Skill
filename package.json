@@ -1,0 +1,29 @@
+{
+  "name": "case2skill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Turn solved cases into evidence-linked agent skill candidates and test their transfer.",
+  "engines": {
+    "node": ">=24.13.0"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.ts",
+    "demo": "node src/cli.ts demo",
+    "replay": "node src/cli.ts replay",
+    "controls": "node src/cli.ts controls",
+    "case": "node src/cli.ts case",
+    "doctor": "node src/cli.ts doctor",
+    "case2skill": "node src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "validate": "node scripts/validate.ts",
+    "release:check": "node scripts/release.ts --check",
+    "release:stage": "node scripts/release.ts"
+  },
+  "license": "MIT",
+  "keywords": ["agent-skills", "codex", "evidence", "skill-refinement", "replay"],
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}

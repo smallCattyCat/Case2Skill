@@ -1,0 +1,67 @@
+{
+  "task_id": "lookup-after-expiry",
+  "public_task": {
+    "instruction": "Recover the ORIGINAL report submission. Do not create a separate report for the same business request. Return a confirmed report if recovery can be established, otherwise explain its unresolved status.",
+    "payload": {
+      "title": "Weekly operations summary",
+      "period": "2026-W41"
+    },
+    "prior_operation_id": "original-op",
+    "prior_response": "timeout",
+    "contract": "# Report service contract (local fixture, virtual time)\nPayload: title and period. submit(operation_id, payload); lookup(operation_id).\nIdempotency supported: true. Retention: 40 virtual ticks from the accepted creation.\nEach public submit/lookup advances one tick. Replay is protected strictly before the expiry tick, not at or after it.\nWhen supported and still retained, the same identifier and identical payload return the same report; a changed payload returns conflict.\nAn unsupported or expired key does not prevent a repeated submission from creating another report.\nA client timeout alone does not disclose whether the server accepted the request.\nLookup: available. Available lookup returns completed, not_found, or indeterminate. Unavailable lookup returns indeterminate.\nThe service does not know business intent. Identical payloads can be two separately requested reports. The caller supplies operation identifiers.\nReport IDs returned by completed responses identify actual created reports. An indeterminate response does not confirm creation or noncreation.\n\nReceipt-store extension: accepted reports remain queryable by operation identifier after the replay key expires. Replay expiry disables write deduplication, not historical lookup.\n",
+    "elapsed_ticks": 50
+  },
+  "skill_sha256": "4157ab8b1e0084a109f2bd6649ab824bbaa4e86b3ba445e8b6882a92a5558c1b",
+  "execution_status": "completed",
+  "observations": [
+    {
+      "action": {
+        "action": "lookup",
+        "operation_id": "original-op",
+        "title": null,
+        "period": null,
+        "report_id": null,
+        "status": null,
+        "reason": "Check historical receipt for the original timed-out operation without risking a duplicate."
+      },
+      "response": {
+        "status": "completed",
+        "reportId": "report-001"
+      }
+    },
+    {
+      "action": {
+        "action": "finish",
+        "operation_id": null,
+        "title": null,
+        "period": null,
+        "report_id": "report-001",
+        "status": "completed",
+        "reason": "Historical lookup confirmed the original operation completed as report-001; no resubmission is needed."
+      },
+      "response": {
+        "status": "final_recorded"
+      }
+    }
+  ],
+  "score": {
+    "task_id": "lookup-after-expiry",
+    "task_outcome": "completed",
+    "transfer_behavior": "appropriate",
+    "report_count": 1,
+    "extra_reports": 0,
+    "unsupported_success_claim": false,
+    "uncertain_write_attempts": 0,
+    "task_success": true,
+    "behavior_pass": true,
+    "action_count": 2,
+    "unavailable_lookup_attempts": 0,
+    "scope": "deterministic_local_simulation"
+  },
+  "evidence_class": "selected_actual_model_run_on_synthetic_service",
+  "requested_model": "gpt-5.6-sol",
+  "effective_model": null,
+  "model_calls": 2,
+  "source_report_sha256": "2d5e6fbc5326a1180cc4bd609932fc8a7a6f69494e42c72602ed1bc473539155",
+  "note": "Private prompt envelopes, runtime paths and session identifiers omitted."
+}

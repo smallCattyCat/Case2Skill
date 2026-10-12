@@ -1,0 +1,494 @@
+{
+  "schema_version": "case2skill.public-recording.v1",
+  "evidence_class": "selected_projection_of_saved_model_runs",
+  "recorded_date": "2026-10-12",
+  "requested_model": "gpt-5.6-sol",
+  "effective_model": null,
+  "reasoning_effort": "low",
+  "parent_content_hash": "195f3aecb57ab3b3307c138b6b515ac5d6ce5b1fcff98f1efe44004f5f54d432",
+  "child_content_hash": "13754c032fb19caf74c78fac931285d85177c33d9b61f1d616e436e1e0c09c10",
+  "source_hashes": {
+    "original_comparison": "2d49a4a359b4ab5137522d9a818728d25a5327eea10a701256a4332a13ed2919",
+    "revision_comparison": "36d505ae18d7a19a58e32b0fd28ac1c2f12e836e1e39b6ce230f9fc73affe823",
+    "revision": "fdbbe249ac711f50e26dd02fc34fbf683297c14fc480c98d40f55446b5bad54b",
+    "native_loading": "e04a768e94f0cb4e2d9f15893570fc4099ad74a75ac0ab63f12313184c993bfa"
+  },
+  "highlight": {
+    "arm": "case2skill",
+    "task_id": "uncertain-no-contract",
+    "skill_sha256": "0721fbbaa5320691e3fad1ce0f5cbb58cf5bff86540861f7441f282bae89e923",
+    "execution_status": "completed",
+    "observations": [
+      {
+        "action": {
+          "action": "lookup",
+          "operation_id": "original-op",
+          "title": null,
+          "period": null,
+          "report_id": null,
+          "status": null,
+          "reason": "Check the original operation first; the timeout does not establish whether it was accepted."
+        },
+        "response": {
+          "status": "indeterminate",
+          "reason": "Lookup currently unavailable; execution cannot be inferred"
+        }
+      },
+      {
+        "action": {
+          "action": "finish",
+          "operation_id": null,
+          "title": null,
+          "period": null,
+          "report_id": null,
+          "status": "pending",
+          "reason": "Lookup is unavailable and idempotency is unsupported, so the original timed-out submission cannot be confirmed and replay could create a duplicate."
+        },
+        "response": {
+          "status": "final_recorded"
+        }
+      }
+    ],
+    "score": {
+      "task_id": "uncertain-no-contract",
+      "task_outcome": "pending",
+      "transfer_behavior": "appropriate",
+      "report_count": 1,
+      "extra_reports": 0,
+      "unsupported_success_claim": false,
+      "uncertain_write_attempts": 0,
+      "task_success": false,
+      "behavior_pass": true,
+      "action_count": 2,
+      "scope": "deterministic_local_simulation"
+    },
+    "model_calls": 2
+  },
+  "rows": [
+    {
+      "arm": "parent",
+      "task_id": "uncertain-no-contract",
+      "skill_sha256": "0721fbbaa5320691e3fad1ce0f5cbb58cf5bff86540861f7441f282bae89e923",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": null,
+            "status": "pending",
+            "reason": "Original outcome remains unresolved: lookup is unavailable and idempotency is unsupported, so resubmission could create a duplicate."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "uncertain-no-contract",
+        "task_outcome": "pending",
+        "transfer_behavior": "appropriate",
+        "report_count": 1,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": false,
+        "behavior_pass": true,
+        "action_count": 1,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 1
+    },
+    {
+      "arm": "revised",
+      "task_id": "uncertain-no-contract",
+      "skill_sha256": "47328da1a78ddb4d9d5b2c584eef453e9ff6761f822fd214f6712b76393347f8",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": null,
+            "status": "pending",
+            "reason": "Original submission remains unresolved: lookup is unavailable, and replay is unsafe because idempotency is unsupported and may create a duplicate."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "uncertain-no-contract",
+        "task_outcome": "pending",
+        "transfer_behavior": "appropriate",
+        "report_count": 1,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": false,
+        "behavior_pass": true,
+        "action_count": 1,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 1
+    },
+    {
+      "arm": "revised",
+      "task_id": "recover-committed",
+      "skill_sha256": "47328da1a78ddb4d9d5b2c584eef453e9ff6761f822fd214f6712b76393347f8",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "lookup",
+            "operation_id": "original-op",
+            "title": null,
+            "period": null,
+            "report_id": null,
+            "status": null,
+            "reason": "Check the original operation within the idempotency retention window before any replay."
+          },
+          "response": {
+            "status": "completed",
+            "reportId": "report-001"
+          }
+        },
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": "report-001",
+            "status": "completed",
+            "reason": "Lookup confirmed the original operation completed as report-001."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "recover-committed",
+        "task_outcome": "completed",
+        "transfer_behavior": "appropriate",
+        "report_count": 1,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": true,
+        "behavior_pass": true,
+        "action_count": 2,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 2
+    },
+    {
+      "arm": "parent",
+      "task_id": "recover-committed",
+      "skill_sha256": "0721fbbaa5320691e3fad1ce0f5cbb58cf5bff86540861f7441f282bae89e923",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "lookup",
+            "operation_id": "original-op",
+            "title": null,
+            "period": null,
+            "report_id": null,
+            "status": null,
+            "reason": "Check the original operation within the idempotency retention window before any replay."
+          },
+          "response": {
+            "status": "completed",
+            "reportId": "report-001"
+          }
+        },
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": "report-001",
+            "status": "completed",
+            "reason": "Lookup confirmed the original operation completed as report-001."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "recover-committed",
+        "task_outcome": "completed",
+        "transfer_behavior": "appropriate",
+        "report_count": 1,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": true,
+        "behavior_pass": true,
+        "action_count": 2,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 2
+    },
+    {
+      "arm": "parent",
+      "task_id": "new-intent",
+      "skill_sha256": "0721fbbaa5320691e3fad1ce0f5cbb58cf5bff86540861f7441f282bae89e923",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "submit",
+            "operation_id": "new-op-2026w41-01",
+            "title": "Weekly operations summary",
+            "period": "2026-W41",
+            "report_id": null,
+            "status": null,
+            "reason": "Submit with a fresh operation identifier because the user requested a separate new report."
+          },
+          "response": {
+            "status": "completed",
+            "reportId": "report-002"
+          }
+        },
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": "report-002",
+            "status": "completed",
+            "reason": "The separate new report was confirmed completed as report-002."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "new-intent",
+        "task_outcome": "completed",
+        "transfer_behavior": "appropriate",
+        "report_count": 2,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": true,
+        "behavior_pass": true,
+        "action_count": 2,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 2
+    },
+    {
+      "arm": "revised",
+      "task_id": "new-intent",
+      "skill_sha256": "47328da1a78ddb4d9d5b2c584eef453e9ff6761f822fd214f6712b76393347f8",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "submit",
+            "operation_id": "new-op-2026-W41-02",
+            "title": "Weekly operations summary",
+            "period": "2026-W41",
+            "report_id": null,
+            "status": null,
+            "reason": "Submit with a fresh operation identifier because the user explicitly requested a separate new report."
+          },
+          "response": {
+            "status": "completed",
+            "reportId": "report-002"
+          }
+        },
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": "report-002",
+            "status": "completed",
+            "reason": "The separately requested report was confirmed created as report-002."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "new-intent",
+        "task_outcome": "completed",
+        "transfer_behavior": "appropriate",
+        "report_count": 2,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": true,
+        "behavior_pass": true,
+        "action_count": 2,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 2
+    },
+    {
+      "arm": "revised",
+      "task_id": "retry-not-created",
+      "skill_sha256": "47328da1a78ddb4d9d5b2c584eef453e9ff6761f822fd214f6712b76393347f8",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "lookup",
+            "operation_id": "original-op",
+            "title": null,
+            "period": null,
+            "report_id": null,
+            "status": null,
+            "reason": "Check the original operation within the idempotency retention window."
+          },
+          "response": {
+            "status": "not_found",
+            "reason": "No committed report is visible under this identifier"
+          }
+        },
+        {
+          "action": {
+            "action": "submit",
+            "operation_id": "original-op",
+            "title": "Weekly operations summary",
+            "period": "2026-W41",
+            "report_id": null,
+            "status": null,
+            "reason": "Replay the original operation with the identical payload while idempotency protection remains active."
+          },
+          "response": {
+            "status": "completed",
+            "reportId": "report-001"
+          }
+        },
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": "report-001",
+            "status": "completed",
+            "reason": "Original operation replay completed and confirmed report-001."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "retry-not-created",
+        "task_outcome": "completed",
+        "transfer_behavior": "appropriate",
+        "report_count": 1,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": true,
+        "behavior_pass": true,
+        "action_count": 3,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 3
+    },
+    {
+      "arm": "parent",
+      "task_id": "retry-not-created",
+      "skill_sha256": "0721fbbaa5320691e3fad1ce0f5cbb58cf5bff86540861f7441f282bae89e923",
+      "execution_status": "completed",
+      "observations": [
+        {
+          "action": {
+            "action": "lookup",
+            "operation_id": "original-op",
+            "title": null,
+            "period": null,
+            "report_id": null,
+            "status": null,
+            "reason": "Check the original operation outcome before any replay to avoid creating a duplicate report."
+          },
+          "response": {
+            "status": "not_found",
+            "reason": "No committed report is visible under this identifier"
+          }
+        },
+        {
+          "action": {
+            "action": "submit",
+            "operation_id": "original-op",
+            "title": "Weekly operations summary",
+            "period": "2026-W41",
+            "report_id": null,
+            "status": null,
+            "reason": "Replay the original operation with the identical payload while idempotency protection remains active."
+          },
+          "response": {
+            "status": "completed",
+            "reportId": "report-001"
+          }
+        },
+        {
+          "action": {
+            "action": "finish",
+            "operation_id": null,
+            "title": null,
+            "period": null,
+            "report_id": "report-001",
+            "status": "completed",
+            "reason": "The original operation was replayed with the identical payload and completed as report-001."
+          },
+          "response": {
+            "status": "final_recorded"
+          }
+        }
+      ],
+      "score": {
+        "task_id": "retry-not-created",
+        "task_outcome": "completed",
+        "transfer_behavior": "appropriate",
+        "report_count": 1,
+        "extra_reports": 0,
+        "unsupported_success_claim": false,
+        "uncertain_write_attempts": 0,
+        "task_success": true,
+        "behavior_pass": true,
+        "action_count": 3,
+        "unavailable_lookup_attempts": 0,
+        "scope": "deterministic_local_simulation"
+      },
+      "model_calls": 3
+    }
+  ],
+  "native_loading": {
+    "status": "body_loading_confirmed",
+    "supplied_prompt_contains_skill_body": false,
+    "exported_bytes_match": true,
+    "exact_nonmetadata_body_match": true,
+    "model_native_tool_events": 0,
+    "loader_internal_trace_available": false
+  },
+  "privacy_projection": "Full prompts, local paths, thread IDs and authentication metadata are excluded. Source hashes identify private original receipts, not independently authenticated public evidence."
+}

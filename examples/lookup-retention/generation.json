@@ -1,0 +1,14 @@
+{
+  "requested_model": "gpt-5.6-sol",
+  "effective_model": null,
+  "status": "completed",
+  "usage": {
+    "input_tokens": 18416,
+    "cached_input_tokens": 0,
+    "output_tokens": 1693,
+    "reasoning_output_tokens": 47
+  },
+  "model_call_attempts": 1,
+  "response_sha256": "2a332781e33c114a8944a9da5482b0a030bc73795d596591621137c2383fba2c",
+  "events_sha256": "dd1e26a6d1bc9e646e9fca6f5da6c26cab8e4c89a8a5d49a3e4d6025e22d7f75"
+}

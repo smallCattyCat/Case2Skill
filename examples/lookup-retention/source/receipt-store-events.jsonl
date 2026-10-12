@@ -1,0 +1,5 @@
+{"seq":1,"at":1,"kind":"submit_received","details":{"operationId":"receipt-store-v2","payload":{"title":"Release compatibility summary","period":"v2"}}}
+{"seq":2,"at":1,"kind":"report_created","details":{"id":"report-001","operationId":"receipt-store-v2","payload":{"title":"Release compatibility summary","period":"v2"},"createdAt":1}}
+{"seq":3,"at":1,"kind":"response_lost","details":{"operationId":"receipt-store-v2"}}
+{"seq":4,"at":51,"kind":"virtual_clock_advanced","details":{"ticks":50}}
+{"seq":5,"at":52,"kind":"lookup","details":{"operationId":"receipt-store-v2"}}

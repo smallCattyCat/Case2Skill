@@ -1,0 +1,11 @@
+{"run":"attempt-a","seq":1,"at":1,"kind":"submit_received","details":{"operationId":"case-original","payload":{"title":"Deployment summary","period":"2026-W40"}}}
+{"run":"attempt-a","seq":2,"at":1,"kind":"report_created","details":{"id":"report-001","operationId":"case-original","payload":{"title":"Deployment summary","period":"2026-W40"},"createdAt":1}}
+{"run":"attempt-a","seq":3,"at":1,"kind":"response_lost","details":{"operationId":"case-original"}}
+{"run":"attempt-a","seq":4,"at":2,"kind":"submit_received","details":{"operationId":"case-retry-new-key","payload":{"title":"Deployment summary","period":"2026-W40"}}}
+{"run":"attempt-a","seq":5,"at":2,"kind":"report_created","details":{"id":"report-002","operationId":"case-retry-new-key","payload":{"title":"Deployment summary","period":"2026-W40"},"createdAt":2}}
+{"run":"attempt-b","seq":1,"at":1,"kind":"submit_received","details":{"operationId":"case-original","payload":{"title":"Deployment summary","period":"2026-W40"}}}
+{"run":"attempt-b","seq":2,"at":1,"kind":"report_created","details":{"id":"report-001","operationId":"case-original","payload":{"title":"Deployment summary","period":"2026-W40"},"createdAt":1}}
+{"run":"attempt-b","seq":3,"at":1,"kind":"response_lost","details":{"operationId":"case-original"}}
+{"run":"attempt-b","seq":4,"at":2,"kind":"lookup","details":{"operationId":"case-original"}}
+{"run":"attempt-b","seq":5,"at":3,"kind":"submit_received","details":{"operationId":"case-original","payload":{"title":"Deployment summary","period":"2026-W40"}}}
+{"run":"attempt-b","seq":6,"at":3,"kind":"idempotent_replay","details":{"operationId":"case-original","reportId":"report-001"}}

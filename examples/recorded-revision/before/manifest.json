@@ -1,0 +1,15 @@
+{
+  "schema_version": "case2skill.bundle.v0",
+  "content_hash": "195f3aecb57ab3b3307c138b6b515ac5d6ce5b1fcff98f1efe44004f5f54d432",
+  "lesson_hash": "3b06bce931652b9314d922c55332600869d2f602351f00d3791f1fb8c06919c1",
+  "source_digest": "c9f57bfced17ca9663f9eb421f33e283ca014966622a5521109f41d6c15d30c2",
+  "origin": "codex_generated",
+  "status": "candidate",
+  "semantic_review": "not_performed",
+  "transfer_validation": "not_run",
+  "files": {
+    "lesson.json": "0d2c9209989781c7f94c21098707d088632ccefda6f6121813c1a50e7aee227e",
+    "SKILL.md": "0721fbbaa5320691e3fad1ce0f5cbb58cf5bff86540861f7441f282bae89e923",
+    "references/evidence.md": "66178844dcb4eef667a45c9485856883fa4522810ca72b747e4898c1359c8416"
+  }
+}

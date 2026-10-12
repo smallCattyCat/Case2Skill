@@ -1,0 +1,18 @@
+{
+  "schema_version": "case2skill.case.v0",
+  "case_id": "report-timeout-001",
+  "files": [
+    {
+      "path": "case.md",
+      "kind": "narrative"
+    },
+    {
+      "path": "service-contract.md",
+      "kind": "contract"
+    },
+    {
+      "path": "events.jsonl",
+      "kind": "runtime_log"
+    }
+  ]
+}

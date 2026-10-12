@@ -1,0 +1,19 @@
+name: Example case
+description: Propose a solved problem and a transfer boundary
+body:
+  - type: textarea
+    attributes:
+      label: Solved problem and evidence
+      description: What changed the outcome, and how can another developer check it?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: When should the lesson not apply?
+      description: A version, environment, intent, or information difference that matters.
+  - type: checkboxes
+    attributes:
+      label: Rights and privacy
+      options:
+        - label: I have permission to share the proposed material, and it contains no private data or secrets.
+          required: true
